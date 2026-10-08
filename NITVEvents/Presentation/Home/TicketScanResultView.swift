@@ -147,7 +147,7 @@ final class TicketScanResultView: UIView {
 
         statusLabel.textColor = .black
         statusLabel.numberOfLines = 0
-        statusLabel.textAlignment = .center
+        statusLabel.textAlignment = .center 
         containerView.addSubview(statusLabel)
 
         // MARK: Information Labels
