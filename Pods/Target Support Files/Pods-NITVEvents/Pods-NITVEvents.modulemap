@@ -1,0 +1,6 @@
+framework module Pods_NITVEvents {
+  umbrella header "Pods-NITVEvents-umbrella.h"
+
+  export *
+  module * { export * }
+}
