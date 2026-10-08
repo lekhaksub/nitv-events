@@ -4,7 +4,7 @@ import AVFoundation
 /// Full-screen QR / barcode scanner (AVFoundation).
 final class ScannerViewController: UIViewController {
     var onScan: ((String) -> Void)?
-
+    var ticketID: String = ""
     private let session = AVCaptureSession()
     private var previewLayer: AVCaptureVideoPreviewLayer?
     private var didFinish = false
@@ -134,7 +134,14 @@ final class ScannerViewController: UIViewController {
         didFinish = true
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         stopSession()
-        dismiss(animated: true) { [onScan] in onScan?(value) }
+        print("value: \(value)")
+        if let data = value.data(using: .utf8),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+            
+            print(json["ticket_id"] as? String ?? "")
+         ticketID = json["ticket_id"] as? String ?? ""
+        }
+        dismiss(animated: true) { [onScan] in onScan?(self.ticketID) }
     }
 }
 

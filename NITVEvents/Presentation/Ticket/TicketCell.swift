@@ -65,7 +65,7 @@ final class TicketCell: UITableViewCell {
 
     func configure(with ticket: TicketData) {
         nameLabel.text = ticket.name
-        idLabel.text = "ID: \(ticket.ticketId)"
+        idLabel.text = "ID: \(ticket.ticketID ?? "")"
         phoneLabel.text = ticket.phone
 //        showLabel.text = ticket.show.isEmpty ? nil : "\(ticket.event) · \(ticket.show)"
         showLabel.isHidden = true

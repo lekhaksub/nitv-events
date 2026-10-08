@@ -9,7 +9,7 @@ final class AppContainer {
     private lazy var api: APIService = AppConfig.useMockAPI
         ? MockAPIService()
         : RemoteAPIService(baseURL: AppConfig.baseURL, tokenStorage: tokenStorage)
-    private lazy var authRepository: AuthRepository = AuthRepositoryImpl(api: api, tokenStorage: tokenStorage)
+//    private lazy var authRepository: AuthRepository = AuthRepositoryImpl(api: api, tokenStorage: tokenStorage)
 //    private lazy var ticketRepository: TicketRepository = TicketRepositoryImpl(api: api)
 
     func makeLoginViewModel() -> LoginViewModel {

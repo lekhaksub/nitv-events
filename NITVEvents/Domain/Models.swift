@@ -50,7 +50,7 @@ struct TicketData: Codable {
     let email: String?
     let phone: String?
     let status: String?
-    let isScanned: Int?
+    let isScanned: Bool?
     let url: String?
     let purchase: PurchaseStatus?
 

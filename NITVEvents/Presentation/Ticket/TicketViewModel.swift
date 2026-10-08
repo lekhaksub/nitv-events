@@ -1,18 +1,18 @@
 import Foundation
 import Combine
 
-struct TicketState {
-    var query = ""
-    var isLoading = false
-    var results: [Ticket] = []
-    var searched = false
-    var error: String?
-}
+//struct TicketState {
+//    var query = ""
+//    var isLoading = false
+//    var results: [Ticket] = []
+//    var searched = false
+//    var error: String?
+//}
 
 @MainActor
 final class TicketViewModel {
-    var searchModel: TicketsResponse?
-    var searchList: [Ticket] = []
+    var searchModel: TicketResponse?
+    var searchList: [TicketData] = []
     
 //    @Published private(set) var state = TicketState()
 //
@@ -62,7 +62,7 @@ final class TicketViewModel {
         
         let params: [String: String] = ["search": searchText]
         
-        APIManager.shared.request(ofType: TicketsResponse.self, url: URL(string: url)!, method: .post, parameters: params){ (status, errorMessage, model, statusCode) in
+        APIManager.shared.request(ofType: TicketResponse.self, url: URL(string: url)!, method: .post, parameters: params){ (status, errorMessage, model, statusCode) in
             if status{
                 self.searchModel = model
                 self.searchList = model?.data ?? []

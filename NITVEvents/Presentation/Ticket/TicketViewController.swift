@@ -4,7 +4,7 @@ import Combine
 final class TicketViewController: UIViewController {
     private let viewModel: TicketViewModel
     private var cancellables = Set<AnyCancellable>()
-    private var tickets: [Ticket] = []
+    private var tickets: [TicketData] = []
 
     private let searchField = UITextField()
     private let tableView = UITableView(frame: .zero, style: .plain)
@@ -108,30 +108,30 @@ final class TicketViewController: UIViewController {
 //            .store(in: &cancellables)
 //    }
 
-    private func render(_ state: TicketState) {
-        // keeps the field in sync when the query is set from outside (e.g. after a scan)
-        if searchField.text != state.query { searchField.text = state.query }
-
-        tickets = state.results
-        tableView.reloadData()
-
-        state.isLoading ? spinner.startAnimating() : spinner.stopAnimating()
-
-        let message: String?
-        if let error = state.error {
-            message = error
-        } else if state.isLoading {
-            message = nil
-        } else if !state.searched {
-            message = "Search by name, ticket ID or phone number"
-        } else if state.results.isEmpty {
-            message = "No tickets found"
-        } else {
-            message = nil
-        }
-        messageLabel.text = message
-        messageLabel.isHidden = message == nil
-    }
+//    private func render(_ state: TicketState) {
+//        // keeps the field in sync when the query is set from outside (e.g. after a scan)
+//        if searchField.text != state.query { searchField.text = state.query }
+//
+//        tickets = state.results
+//        tableView.reloadData()
+//
+//        state.isLoading ? spinner.startAnimating() : spinner.stopAnimating()
+//
+//        let message: String?
+//        if let error = state.error {
+//            message = error
+//        } else if state.isLoading {
+//            message = nil
+//        } else if !state.searched {
+//            message = "Search by name, ticket ID or phone number"
+//        } else if state.results.isEmpty {
+//            message = "No tickets found"
+//        } else {
+//            message = nil
+//        }
+//        messageLabel.text = message
+//        messageLabel.isHidden = message == nil
+//    }
 
     @objc private func queryChanged() {
 //        viewModel.onQueryChange(searchField.text ?? "")
@@ -155,7 +155,7 @@ extension TicketViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let ticket = tickets[indexPath.row]
-        let web = WebViewController(urlString: "ticket.viewURL", title: "Ticket \(ticket.ticketId)")
+        let web = WebViewController(urlString: ticket.url ?? "", title: "Ticket \(ticket.ticketID ?? "")")
         web.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(web, animated: true)
     }

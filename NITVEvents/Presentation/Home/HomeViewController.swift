@@ -6,7 +6,7 @@ final class HomeViewController: UIViewController {
 
     private let scrollView = UIScrollView()
     private let scanButton = UIButton(type: .system)
-
+    let viewModel = HomeViewModel()
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Theme.background
@@ -224,7 +224,96 @@ final class HomeViewController: UIViewController {
     @objc private func scanTapped() {
         let scanner = ScannerViewController()
         scanner.modalPresentationStyle = .fullScreen
-        scanner.onScan = { [weak self] value in self?.onScanned?(value) }
+        scanner.onScan = { [weak self] value in
+            self?.performScanTicket(ticketID: value)
+        }
         present(scanner, animated: true)
+    }
+    
+    func performScanTicket(ticketID: String) {
+
+        let params: [String: Any] = [
+            "ticket_id": ticketID
+        ]
+
+        viewModel.fetchScannedTicketData(params: params) { [weak self] status, message,_ in
+
+            guard let self = self else { return }
+
+//            DispatchQueue.main.async {
+
+                if status {
+                    if self.viewModel.model?.data?.isValid == false {
+                       
+                        // Show failure popup
+                        self.showTicketScanResult(
+                            result: .failure,
+                            message: self.viewModel.model?.message ?? "",
+                            ticketID: ticketID,
+                            name: self.viewModel.model?.data?.name ?? "",
+                            email: self.viewModel.model?.data?.email ?? "",
+                            phone: self.viewModel.model?.data?.phone ?? ""
+                        )
+                    } else {
+                        
+                        // Show success popup
+                        self.showTicketScanResult(
+                            result: .success,
+                            message: self.viewModel.model?.message ?? "",
+                            ticketID: ticketID,
+                            name: self.viewModel.model?.data?.name ?? "",
+                            email: self.viewModel.model?.data?.email ?? "",
+                            phone: self.viewModel.model?.data?.phone ?? ""
+                        )
+                    }
+
+                } else {
+
+                    // Show failure popup
+                    self.showTicketScanResult(
+                        result: .failure,
+                        message: self.viewModel.model?.message ?? "",
+                        ticketID: ticketID,
+                        name: "",
+                        email: "",
+                        phone: ""
+                    )
+                }
+//            }
+        }
+    }
+    
+    private func showTicketScanResult(
+        result: TicketScanResultView.ScanResult,
+        message: String,
+        ticketID: String,
+        name: String,
+        email: String,
+        phone: String
+    ) {
+
+        let popup = TicketScanResultView(
+            result: result,
+            message: message,
+            ticketID: ticketID,
+            name: name,
+            email: email,
+            phone: phone
+        )
+
+        popup.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(popup)
+
+        NSLayoutConstraint.activate([
+            popup.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            popup.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            popup.topAnchor.constraint(equalTo: view.topAnchor),
+            popup.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        popup.onDismiss = { [weak popup] in
+            popup?.removeFromSuperview()
+        }
     }
 }
